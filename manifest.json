@@ -9,7 +9,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["inject.js", "gerador-horario.html"],
+      "resources": ["inject.js"],
       "matches": ["https://uol.unifor.br/*"]
     }
   ],
@@ -22,6 +22,6 @@
   ],
   "action": {
     "default_popup": "hello.html",
-    "default_icon": "hello_extensions.png"
+    "default_icon": "./assets/hello_extensions.png"
   }
 }

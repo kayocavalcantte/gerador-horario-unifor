@@ -2,21 +2,35 @@ let disciplinasGlobais = [];
 
 // Carregar dados do storage
 function atualizarDados() {
+  console.log('📥 Tentando carregar dados do storage...');
   chrome.storage.local.get(['disciplinas'], function(result) {
+    console.log('📦 Resultado do storage:', result);
+    
     if (!result.disciplinas || result.disciplinas.length === 0) {
-      document.getElementById('disciplinas-list').innerHTML = 
-        '<div class="status">❌ Nenhum dado de disciplinas encontrado. Acesse o site de matrícula primeiro.</div>';
+      console.log('❌ Nenhum dado encontrado');
+      const disciplinasEl = document.getElementById('disciplinas-list');
+      if (disciplinasEl) {
+        disciplinasEl.innerHTML = '<div class="status">❌ Nenhum dado de disciplinas encontrado. Acesse o site de matrícula primeiro.</div>';
+      }
+      const optativasEl = document.getElementById('optativas-list');
+      if (optativasEl) {
+        optativasEl.innerHTML = '<div class="status">Sem dados</div>';
+      }
       return;
     }
     
+    console.log(`✅ ${result.disciplinas.length} disciplinas carregadas!`);
     disciplinasGlobais = result.disciplinas;
     exibirDisciplinas();
+    exibirOpcionais();
   });
 }
 
 // Exibir disciplinas obrigatórias
 function exibirDisciplinas() {
+  console.log('📚 Exibindo disciplinas obrigatórias...');
   const obrigatorias = disciplinasGlobais.filter(d => d.tpDisciplina === 'OBRIGATORIA');
+  console.log(`Encontradas ${obrigatorias.length} disciplinas obrigatórias`);
   
   if (obrigatorias.length === 0) {
     document.getElementById('disciplinas-list').innerHTML = 
@@ -45,7 +59,47 @@ function exibirDisciplinas() {
   });
   
   document.getElementById('disciplinas-list').innerHTML = html;
+  console.log('✅ Disciplinas obrigatórias exibidas!');
 }
+
+// Exibir disciplinas opcionais com checkboxes
+function exibirOpcionais() {
+  console.log('⭐ Exibindo disciplinas opcionais...');
+  const optativasEl = document.getElementById('optativas-list');
+  if (!optativasEl) {
+    console.log('❌ Elemento optativas-list não encontrado!');
+    return;
+  }
+  
+  const opcionais = disciplinasGlobais.filter(d => d.tpDisciplina === 'OPTATIVA');
+  console.log(`Encontradas ${opcionais.length} disciplinas opcionais`);
+  
+  if (opcionais.length === 0) {
+    optativasEl.innerHTML = '<div class="status">Nenhuma disciplina opcional disponível</div>';
+    return;
+  }
+  
+  let html = '';
+  opcionais.forEach((d, idx) => {
+    const turmasCount = d.turmas ? d.turmas.length : 0;
+    html += `
+      <div class="optativa-item">
+        <label class="checkbox-wrapper">
+          <input type="checkbox" class="optativa-checkbox" data-index="${idx}" data-codigo="${d.codigo}">
+          <div>
+            <strong>${d.codigo}</strong>
+            <span>${d.nome}</span>
+            <span style="font-size: 0.7rem; color: #9ca3af;">📌 ${turmasCount} turma(s)</span>
+          </div>
+        </label>
+      </div>
+    `;
+  });
+  
+  optativasEl.innerHTML = html;
+  console.log('✅ Disciplinas opcionais exibidas!');
+}
+
 
 // Gerar melhores horários
 function gerarMelhoresHorarios() {
@@ -56,25 +110,43 @@ function gerarMelhoresHorarios() {
     return;
   }
   
-  // Filtrar apenas disciplinas com turmas
-  const comTurmas = obrigatorias.filter(d => d.turmas && d.turmas.length > 0);
+  // Filtrar obrigatórias com turmas
+  let disciplinaSelecionadas = obrigatorias.filter(d => d.turmas && d.turmas.length > 0);
   
-  if (comTurmas.length === 0) {
-    alert('❌ Nenhuma disciplina tem turmas disponíveis!');
+  if (disciplinaSelecionadas.length === 0) {
+    alert('❌ Nenhuma disciplina obrigatória tem turmas disponíveis!');
     return;
   }
   
-  console.log(`Gerando combinações para ${comTurmas.length} disciplinas...`);
+  // Capturar disciplinas opcionais selecionadas
+  const checkboxesSelecionados = Array.from(document.querySelectorAll('.optativa-checkbox:checked'));
+  const indicesOpcionaisSelecionadas = checkboxesSelecionados.map(cb => parseInt(cb.dataset.index));
+  
+  if (indicesOpcionaisSelecionadas.length > 0) {
+    const opcionais = disciplinasGlobais.filter(d => d.tpDisciplina === 'OPTATIVA');
+    const opcionaisSelecionadas = opcionais
+      .filter((d, idx) => indicesOpcionaisSelecionadas.includes(idx))
+      .filter(d => d.turmas && d.turmas.length > 0);
+    
+    disciplinaSelecionadas = [...disciplinaSelecionadas, ...opcionaisSelecionadas];
+  }
+  
+  console.log(`Gerando combinações para ${disciplinaSelecionadas.length} disciplinas...`);
   
   const inicio = performance.now();
   
   // Gerar combinações
-  const combinacoes = window.HorarioAlgoritmo.gerarCombinacoes(comTurmas);
+  const combinacoes = window.HorarioAlgoritmo.gerarCombinacoes(disciplinaSelecionadas);
   
   const fim = performance.now();
   const tempo = (fim - inicio).toFixed(2);
   
   console.log(`✅ ${combinacoes.length} combinações geradas em ${tempo}ms`);
+  
+  if (combinacoes.length === 0) {
+    alert('❌ Nenhuma combinação válida encontrada com as disciplinas selecionadas!');
+    return;
+  }
   
   // Calcular scores
   const combinacoesComScore = combinacoes.map(comb => ({
@@ -158,7 +230,19 @@ function exibirResultados(resultados) {
 
 // Carregar dados ao abrir a página
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Página carregada! Iniciando gerador de horários...');
   atualizarDados();
-  document.getElementById('btnGerar').addEventListener('click', gerarMelhoresHorarios);
-  document.getElementById('btnAtualizar').addEventListener('click', atualizarDados);
+  
+  const btnGerar = document.getElementById('btnGerar');
+  const btnAtualizar = document.getElementById('btnAtualizar');
+  
+  if (btnGerar) {
+    btnGerar.addEventListener('click', gerarMelhoresHorarios);
+    console.log('✅ Botão Gerar conectado');
+  }
+  
+  if (btnAtualizar) {
+    btnAtualizar.addEventListener('click', atualizarDados);
+    console.log('✅ Botão Atualizar conectado');
+  }
 });
