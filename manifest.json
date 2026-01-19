@@ -1,0 +1,27 @@
+{
+  "name": "Horário Aula Chrome",
+  "description": "Captura dados de disciplinas",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["tabs", "scripting", "storage"],
+  "host_permissions": [
+    "https://uol.unifor.br/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js", "gerador-horario.html"],
+      "matches": ["https://uol.unifor.br/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://uol.unifor.br/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": "hello_extensions.png"
+  }
+}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Disciplinas - Horário de Aulas</title>
+  <link rel="stylesheet" href="css/disciplinas.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Disciplinas Disponíveis</h1>
+    <div class="status" id="status">Carregando dados...</div>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <button onclick="atualizarDados()">🔄 Atualizar</button>
+      <button class="btn-limpar" onclick="limparDados()">🗑️ Limpar Dados</button>
+    </div>
+    <div id="dados"></div>
+  </div>
+
+  <script src="disciplinas.js"></script>
+</body>
+</html>

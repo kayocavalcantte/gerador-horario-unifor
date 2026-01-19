@@ -1,0 +1,149 @@
+/* Disciplinas CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 2em;
+}
+
+.status {
+  text-align: center;
+  padding: 20px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  color: #666;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.btn-limpar {
+  background: #dc3545;
+}
+
+.btn-limpar:hover {
+  background: #c82333;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.card h2 {
+  color: #333;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* Lists */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  padding: 10px;
+  margin: 8px 0;
+  background: #f9f9f9;
+  border-left: 3px solid #007bff;
+  padding-left: 15px;
+  border-radius: 4px;
+}
+
+.obrigatoria {
+  border-left-color: #28a745;
+  background: #f0f9f0;
+}
+
+.optativa {
+  border-left-color: #007bff;
+  background: #f0f5ff;
+}
+
+.info {
+  color: #666;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.turma {
+  font-size: 11px;
+  color: #666;
+  margin-top: 5px;
+  padding-left: 15px;
+}
+
+/* Table */
+.tabela-horario {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin-top: 15px;
+}
+
+.tabela-horario th,
+.tabela-horario td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.tabela-horario th {
+  background: #007bff;
+  color: white;
+}
+
+.tabela-horario tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  .card {
+    padding: 15px;
+  }
+}

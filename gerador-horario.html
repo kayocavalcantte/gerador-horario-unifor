@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Horário Ideal</title>
+  <link rel="stylesheet" href="css/gerador-horario.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🎓 Gerador de Horário Ideal</h1>
+      <p class="subtitle">Encontre as melhores combinações de horários</p>
+    </header>
+
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>📚 Disciplinas Obrigatórias</h2>
+          </div>
+          <div id="disciplinas-list" class="disciplinas-content">
+            <div class="status">Carregando disciplinas...</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="controls-panel">
+          <div class="panel">
+            <button id="btnGerar" class="btn-primary">🚀 Gerar Melhores Horários</button>
+            <button id="btnAtualizar" class="btn-secondary">🔄 Atualizar Dados</button>
+            <div id="stats" class="stats-box">
+              <div class="stat-item">
+                <span class="stat-label">Combinações:</span>
+                <span class="stat-value" id="total-combinacoes">--</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Tempo:</span>
+                <span class="stat-value" id="tempo-processamento">--</span>ms
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-panel">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>🏆 Top 5 Melhores Horários</h2>
+            </div>
+            <div id="resultados" class="resultados">
+              <div class="status">Clique em "Gerar Melhores Horários" para ver os resultados</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="algoritmo-horario.js"></script>
+  <script src="gerador-horario.js"></script>
+</body>
+</html>
