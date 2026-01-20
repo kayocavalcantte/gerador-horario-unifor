@@ -1,6 +1,8 @@
 {
   "name": "Horário Aula Chrome",
   "description": "Captura dados de disciplinas",
+  "author": "Kayo Duarte Cavalcante",
+  "homepage_url": "https://github.com/kayocavalcantte",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": ["tabs", "scripting", "storage"],
