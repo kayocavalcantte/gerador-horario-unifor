@@ -15,6 +15,27 @@
     <div class="layout">
       <!-- SIDEBAR -->
       <aside class="sidebar">
+        <!-- Seleção de Turnos -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2>⏰ Turnos Disponíveis</h2>
+          </div>
+          <div class="turnos-selection">
+            <label class="turno-checkbox">
+              <input type="checkbox" id="turno-matutino" value="M" checked>
+              <span>🌅 Matutino (7h30 - 13h)</span>
+            </label>
+            <label class="turno-checkbox">
+              <input type="checkbox" id="turno-vespertino" value="T" checked>
+              <span>☀️ Vespertino (13h30 - 19h)</span>
+            </label>
+            <label class="turno-checkbox">
+              <input type="checkbox" id="turno-noturno" value="N" checked>
+              <span>🌙 Noturno (19h - 22h40)</span>
+            </label>
+          </div>
+        </div>
+
         <!-- Disciplinas Obrigatórias -->
         <div class="panel">
           <div class="panel-header">
@@ -49,6 +70,10 @@
           <div class="panel">
             <div class="panel-header">
               <h2>🏆 Top 5 Melhores Horários</h2>
+            </div>
+            <div id="loading-spinner" class="loading-spinner" style="display: none;">
+              <div class="spinner"></div>
+              <p>⏳ Gerando melhores horários...</p>
             </div>
             <div id="resultados" class="resultados">
               <div class="status">Clique em "Gerar Melhores Horários" para ver os resultados</div>

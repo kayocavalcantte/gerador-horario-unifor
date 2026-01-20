@@ -103,65 +103,145 @@ function exibirOpcionais() {
 
 // Gerar melhores horários
 function gerarMelhoresHorarios() {
-  const obrigatorias = disciplinasGlobais.filter(d => d.tpDisciplina === 'OBRIGATORIA');
+  // Mostrar spinner de loading
+  const loadingSpinner = document.getElementById('loading-spinner');
+  const resultadosEl = document.getElementById('resultados');
   
-  if (obrigatorias.length === 0) {
-    alert('❌ Nenhuma disciplina obrigatória encontrada!');
-    return;
+  if (loadingSpinner && resultadosEl) {
+    loadingSpinner.style.display = 'flex';
+    resultadosEl.innerHTML = '';
   }
   
-  // Filtrar obrigatórias com turmas
-  let disciplinaSelecionadas = obrigatorias.filter(d => d.turmas && d.turmas.length > 0);
+  // Usar setTimeout para dar tempo para o spinner renderizar
+  setTimeout(() => {
+    tentarGerarHorarios();
+  }, 100);
+}
+
+function tentarGerarHorarios() {
+  const loadingSpinner = document.getElementById('loading-spinner');
+  const resultadosEl = document.getElementById('resultados');
   
-  if (disciplinaSelecionadas.length === 0) {
-    alert('❌ Nenhuma disciplina obrigatória tem turmas disponíveis!');
-    return;
-  }
-  
-  // Capturar disciplinas opcionais selecionadas
-  const checkboxesSelecionados = Array.from(document.querySelectorAll('.optativa-checkbox:checked'));
-  const indicesOpcionaisSelecionadas = checkboxesSelecionados.map(cb => parseInt(cb.dataset.index));
-  
-  if (indicesOpcionaisSelecionadas.length > 0) {
-    const opcionais = disciplinasGlobais.filter(d => d.tpDisciplina === 'OPTATIVA');
-    const opcionaisSelecionadas = opcionais
-      .filter((d, idx) => indicesOpcionaisSelecionadas.includes(idx))
-      .filter(d => d.turmas && d.turmas.length > 0);
+  try {
+    // Capturar turnos selecionados
+    const turnoMatutino = document.getElementById('turno-matutino')?.checked || false;
+    const turnoVespertino = document.getElementById('turno-vespertino')?.checked || false;
+    const turnoNoturno = document.getElementById('turno-noturno')?.checked || false;
     
-    disciplinaSelecionadas = [...disciplinaSelecionadas, ...opcionaisSelecionadas];
+    const turnosSelecionados = [];
+    if (turnoMatutino) turnosSelecionados.push('M');
+    if (turnoVespertino) turnosSelecionados.push('T');
+    if (turnoNoturno) turnosSelecionados.push('N');
+    
+    if (turnosSelecionados.length === 0) {
+      if (loadingSpinner) loadingSpinner.style.display = 'none';
+      alert('⚠️ Selecione pelo menos um turno!');
+      return;
+    }
+    
+    console.log(`📺 Turnos selecionados: ${turnosSelecionados.join(', ')}`);
+    
+    const obrigatorias = disciplinasGlobais.filter(d => d.tpDisciplina === 'OBRIGATORIA');
+    
+    if (obrigatorias.length === 0) {
+      if (loadingSpinner) loadingSpinner.style.display = 'none';
+      alert('❌ Nenhuma disciplina obrigatória encontrada!');
+      return;
+    }
+    
+    // Filtrar obrigatórias com turmas
+    let disciplinaSelecionadas = obrigatorias
+      .filter(d => d.turmas && d.turmas.length > 0)
+      .map(d => ({
+        ...d,
+        turmas: filtrarTurmasPorTurnos(d.turmas, turnosSelecionados)
+      }))
+      .filter(d => d.turmas.length > 0);
+    
+    if (disciplinaSelecionadas.length === 0) {
+      if (loadingSpinner) loadingSpinner.style.display = 'none';
+      alert('❌ Nenhuma disciplina obrigatória tem turmas nos turnos selecionados!');
+      return;
+    }
+    
+    // Capturar disciplinas opcionais selecionadas
+    const checkboxesSelecionados = Array.from(document.querySelectorAll('.optativa-checkbox:checked'));
+    const indicesOpcionaisSelecionadas = checkboxesSelecionados.map(cb => parseInt(cb.dataset.index));
+    
+    if (indicesOpcionaisSelecionadas.length > 0) {
+      const opcionais = disciplinasGlobais.filter(d => d.tpDisciplina === 'OPTATIVA');
+      const opcionaisSelecionadas = opcionais
+        .filter((d, idx) => indicesOpcionaisSelecionadas.includes(idx))
+        .filter(d => d.turmas && d.turmas.length > 0)
+        .map(d => ({
+          ...d,
+          turmas: filtrarTurmasPorTurnos(d.turmas, turnosSelecionados)
+        }))
+        .filter(d => d.turmas.length > 0);
+      
+      disciplinaSelecionadas = [...disciplinaSelecionadas, ...opcionaisSelecionadas];
+    }
+    
+    console.log(`Gerando combinações para ${disciplinaSelecionadas.length} disciplinas...`);
+    
+    const inicio = performance.now();
+    
+    // Gerar combinações
+    const combinacoes = window.HorarioAlgoritmo.gerarCombinacoes(disciplinaSelecionadas);
+    
+    const fim = performance.now();
+    const tempo = (fim - inicio).toFixed(2);
+    
+    console.log(`✅ ${combinacoes.length} combinações geradas em ${tempo}ms`);
+    
+    if (combinacoes.length === 0) {
+      if (loadingSpinner) loadingSpinner.style.display = 'none';
+      alert('❌ Nenhuma combinação válida encontrada com as disciplinas e turnos selecionados!');
+      return;
+    }
+    
+    // Calcular scores
+    const combinacoesComScore = combinacoes.map(comb => ({
+      turmas: comb,
+      score: window.HorarioAlgoritmo.calcularScore(comb)
+    }));
+    
+    // Ordenar por score (maior primeiro)
+    combinacoesComScore.sort((a, b) => b.score - a.score);
+    
+    // Pegar top 5
+    const top5 = combinacoesComScore.slice(0, 5);
+    
+    // Esconder spinner e exibir resultados
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    exibirResultados(top5);
+  } catch (erro) {
+    console.error('❌ Erro ao gerar horários:', erro);
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    alert('❌ Erro ao gerar horários. Verifique o console.');
   }
-  
-  console.log(`Gerando combinações para ${disciplinaSelecionadas.length} disciplinas...`);
-  
-  const inicio = performance.now();
-  
-  // Gerar combinações
-  const combinacoes = window.HorarioAlgoritmo.gerarCombinacoes(disciplinaSelecionadas);
-  
-  const fim = performance.now();
-  const tempo = (fim - inicio).toFixed(2);
-  
-  console.log(`✅ ${combinacoes.length} combinações geradas em ${tempo}ms`);
-  
-  if (combinacoes.length === 0) {
-    alert('❌ Nenhuma combinação válida encontrada com as disciplinas selecionadas!');
-    return;
-  }
-  
-  // Calcular scores
-  const combinacoesComScore = combinacoes.map(comb => ({
-    turmas: comb,
-    score: window.HorarioAlgoritmo.calcularScore(comb)
-  }));
-  
-  // Ordenar por score (maior primeiro)
-  combinacoesComScore.sort((a, b) => b.score - a.score);
-  
-  // Pegar top 5
-  const top5 = combinacoesComScore.slice(0, 5);
-  
-  // Exibir resultados
-  exibirResultados(top5);
+}
+
+// Filtrar turmas pelos turnos selecionados
+function filtrarTurmasPorTurnos(turmas, turnosSelecionados) {
+  return turmas.filter(turma => {
+    // Se não tem dsHorario (EAD, A FIXAR), incluir mesmo assim
+    if (!turma.dsHorario || turma.dsHorario === '' || turma.dsHorario.includes('FIXAR')) {
+      console.log(`✅ Turma ${turma.cdTurma} incluída (EAD/A FIXAR): ${turma.dsHorario}`);
+      return true;
+    }
+    
+    // dsHorario começa com a letra do turno (M, T, N)
+    const turnoTurma = turma.dsHorario.charAt(0);
+    
+    const deveIncluir = turnosSelecionados.includes(turnoTurma);
+    
+    if (!deveIncluir) {
+      console.log(`❌ Turma ${turma.cdTurma} descartada (turno ${turnoTurma} não selecionado). Horário: ${turma.dsHorario}`);
+    }
+    
+    return deveIncluir;
+  });
 }
 
 // Exibir resultados
@@ -207,6 +287,7 @@ function exibirResultados(resultados) {
         <table class="tabela-horario">
           <tr>
             <th>Turma</th>
+            <th>Disciplina</th>
             <th>Horário</th>
             <th>Sala</th>
             <th>Vagas</th>
@@ -214,6 +295,7 @@ function exibirResultados(resultados) {
           ${resultado.turmas.map(turma => `
             <tr>
               <td>${turma.cdTurma}</td>
+              <td>${turma.cdDisciplina}</td>
               <td>${turma.dsHorario}</td>
               <td>${turma.dsSala}</td>
               <td>${turma.nrVagas || '--'}</td>

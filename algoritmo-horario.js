@@ -97,9 +97,19 @@ function gerarCombinacoes(disciplinasObrigatorias) {
       let temConflitoBool = false;
       
       for (const turmaAnterior of combinacaoAtual) {
-        for (const tempoAtual of turma.tempos) {
-          for (const tempoAnterior of turmaAnterior.tempos) {
-            if (temConflito(tempoAtual, tempoAnterior)) {
+        // Pegar horários - usar dsHorario se tempos não existir
+        const horariosAtual = turma.dsHorario ? [turma.dsHorario] : (turma.tempos || []);
+        const horariosAnterior = turmaAnterior.dsHorario ? [turmaAnterior.dsHorario] : (turmaAnterior.tempos || []);
+        
+        for (const horarioAtual of horariosAtual) {
+          for (const horarioAnterior of horariosAnterior) {
+            // Ignorar EAD e A FIXAR (não têm conflito)
+            if (horarioAtual.includes('FIXAR') || horarioAnterior.includes('FIXAR') ||
+                !horarioAtual || !horarioAnterior || horarioAtual === '' || horarioAnterior === '') {
+              continue;
+            }
+            
+            if (temConflito(horarioAtual, horarioAnterior)) {
               temConflitoBool = true;
               break;
             }
@@ -128,7 +138,15 @@ function calcularScore(combinacao) {
   const diasUsados = new Set();
   
   for (const turma of combinacao) {
-    for (const tempo of turma.tempos) {
+    // Usar dsHorario se tempos não existir
+    const horarios = turma.dsHorario ? [turma.dsHorario] : (turma.tempos || []);
+    
+    for (const tempo of horarios) {
+      // Ignorar EAD e A FIXAR
+      if (!tempo || tempo === '' || tempo.includes('FIXAR')) {
+        continue;
+      }
+      
       temposUnicos.add(tempo);
       const parsed = parseTempo(tempo);
       if (parsed) {

@@ -25,8 +25,8 @@ function exibirDados(dados) {
   
   const html = `
     <div style="text-align: center; padding: 15px;">
-      <h2 style="color: #28a745; margin: 0 0 10px 0;">✓ Dados Capturados!</h2>
-      <p style="margin: 5px 0;"><strong>${obrigatorias.length}</strong> disciplinas obrigatórias</p>
+      <h2 style="color: #28a745; margin: 0 0 10px 0;"> Dados Capturados!</h2>
+      <p style="margin: 5px 0;"><strong>${obrigatorias.length}</strong> disciplinas obrigatorias</p>
       <p style="margin: 5px 0;"><strong>${optativas.length}</strong> disciplinas optativas</p>
       <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Total: ${dados.length} disciplinas</p>
     </div>
@@ -69,18 +69,6 @@ chrome.storage.local.get(['disciplinas', 'timestamp'], function(result) {
   }
 });
 
-// Botão para ver dados
-document.getElementById('btnVerDados').addEventListener('click', () => {
-  chrome.storage.local.get(['disciplinas'], function(result) {
-    if (result.disciplinas) {
-      abrirPaginaDisciplinas();
-    } else {
-      document.getElementById('dados').innerHTML = '<p style="color: red;">Nenhum dado armazenado. Acesse o site da matrícula primeiro.</p>';
-      mostrarStatus('❌ Nenhum dado encontrado', '#dc3545');
-    }
-  });
-});
-
 // Botão para gerar horários
 document.getElementById('btnGerador').addEventListener('click', () => {
   chrome.storage.local.get(['disciplinas'], function(result) {
@@ -90,14 +78,5 @@ document.getElementById('btnGerador').addEventListener('click', () => {
       document.getElementById('dados').innerHTML = '<p style="color: red;">Nenhum dado armazenado. Acesse o site da matrícula primeiro.</p>';
       mostrarStatus('❌ Nenhum dado encontrado', '#dc3545');
     }
-  });
-});
-
-// Botão para limpar dados
-document.getElementById('btnLimpar').addEventListener('click', () => {
-  chrome.storage.local.clear(() => {
-    document.getElementById('dados').innerHTML = '<p>Dados limpos. Acesse o site para capturar novamente.</p>';
-    mostrarStatus('Dados removidos', '#6c757d');
-    console.log('Storage limpo');
   });
 });
