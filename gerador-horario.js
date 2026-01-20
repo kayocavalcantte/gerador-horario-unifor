@@ -85,12 +85,12 @@ function exibirOpcionais() {
     html += `
       <div class="optativa-item">
         <label class="checkbox-wrapper">
-          <input type="checkbox" class="optativa-checkbox" data-index="${idx}" data-codigo="${d.codigo}">
           <div>
             <strong>${d.codigo}</strong>
             <span>${d.nome}</span>
             <span style="font-size: 0.7rem; color: #9ca3af;">📌 ${turmasCount} turma(s)</span>
           </div>
+        <input type="checkbox" class="optativa-checkbox" data-index="${idx}" data-codigo="${d.codigo}">
         </label>
       </div>
     `;
@@ -160,18 +160,20 @@ function gerarMelhoresHorarios() {
   // Pegar top 5
   const top5 = combinacoesComScore.slice(0, 5);
   
-  // Atualizar stats
-  document.getElementById('total-combinacoes').textContent = combinacoes.length;
-  document.getElementById('tempo-processamento').textContent = tempo;
-  
   // Exibir resultados
   exibirResultados(top5);
 }
 
 // Exibir resultados
 function exibirResultados(resultados) {
+  const resultadosEl = document.getElementById('resultados');
+  if (!resultadosEl) {
+    console.log('❌ Elemento resultados não encontrado!');
+    return;
+  }
+  
   if (resultados.length === 0) {
-    document.getElementById('resultados').innerHTML = 
+    resultadosEl.innerHTML = 
       '<div class="status">❌ Nenhuma combinação de horário válida encontrada.</div>';
     return;
   }
@@ -181,14 +183,15 @@ function exibirResultados(resultados) {
   resultados.forEach((resultado, index) => {
     const ranking = index === 0 ? 'primeiro' : index === 1 ? 'segundo' : 'terceiro';
     const medalhas = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+    const posicoes = ['1º Lugar', '2º Lugar', '3º Lugar', '4º Lugar', '5º Lugar'];
     
     html += `
       <div class="resultado-card ${ranking}">
         <div class="score">
-          ${medalhas[index]} Score: ${resultado.score}/100
+          ${medalhas[index]} ${posicoes[index]}
         </div>
         <div class="score-bar">
-          <div class="score-bar-fill" style="width: ${resultado.score}%"></div>
+          <div class="score-bar-fill" style="width: 100%"></div>
         </div>
         
         <h3>📖 Disciplinas</h3>
@@ -225,7 +228,9 @@ function exibirResultados(resultados) {
     `;
   });
   
-  document.getElementById('resultados').innerHTML = html;
+  if (resultadosEl) {
+    resultadosEl.innerHTML = html;
+  }
 }
 
 // Carregar dados ao abrir a página

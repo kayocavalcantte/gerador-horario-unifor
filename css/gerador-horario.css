@@ -314,9 +314,10 @@ button {
 /* Custom Checkbox */
 .checkbox-wrapper {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 10px;
+  align-items: flex-start;
   flex: 1;
+  width: 100%;
 }
 
 .checkbox-wrapper input[type="checkbox"] {
@@ -326,25 +327,49 @@ button {
   accent-color: var(--primary);
   margin: 0;
   flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkbox-wrapper > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
 }
 
 .optativa-item label {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
   cursor: pointer;
-  flex: 1;
+  width: 100%;
+  margin: 0;
 }
 
 .optativa-item label strong {
   font-size: 0.85rem;
   color: var(--text);
-  display: block;
+  display: inline;
 }
 
 .optativa-item label span {
   font-size: 0.75rem;
   color: var(--text-light);
+  display: block;
+}
+
+.checkbox-wrapper > div strong {
+  font-weight: 700;
+}
+
+.checkbox-wrapper > div span:first-of-type {
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+.checkbox-wrapper > div span:last-of-type {
+  color: #9ca3af;
+  font-size: 0.7rem;
 }
 
 /* STATUS para opcionais */
