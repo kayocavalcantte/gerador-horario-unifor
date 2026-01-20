@@ -321,15 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
   atualizarDados();
   
   const btnGerar = document.getElementById('btnGerar');
-  const btnAtualizar = document.getElementById('btnAtualizar');
   
   if (btnGerar) {
     btnGerar.addEventListener('click', gerarMelhoresHorarios);
     console.log('✅ Botão Gerar conectado');
-  }
-  
-  if (btnAtualizar) {
-    btnAtualizar.addEventListener('click', atualizarDados);
-    console.log('✅ Botão Atualizar conectado');
   }
 });

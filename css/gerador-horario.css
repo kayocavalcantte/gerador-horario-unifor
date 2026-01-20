@@ -35,32 +35,12 @@ body {
   margin: 0 auto;
 }
 
-/* HEADER */
-.header {
-  margin-bottom: 32px;
-  text-align: center;
-}
-
-.header h1 {
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.subtitle {
-  color: var(--text-light);
-  font-size: 1.05rem;
-}
-
 /* LAYOUT */
 .layout {
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 24px;
+  align-items: start;
 }
 
 /* SIDEBAR */
@@ -74,7 +54,28 @@ body {
 .main {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0;
+}
+
+/* HEADER */
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--text-light);
+  font-size: 1rem;
 }
 
 /* PANELS */
@@ -109,23 +110,28 @@ body {
 
 /* CONTROLS PANEL */
 .controls-panel {
-  display: contents;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
 }
 
-.controls-panel .panel {
-  display: grid;
-  /* grid-template-columns: 1fr 1fr; */
-  gap: 12px;
-  padding: 16px;
-}
-
-.controls-panel button {
+.btn-hero {
+  font-size: 1.05rem !important;
+  padding: 14px 28px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
+  transition: all 0.3s ease !important;
+  max-width: 380px;
   width: 100%;
 }
 
-#btnGerar {
-  grid-column: 1 / -1;
-  margin-bottom: 0;
+.btn-hero:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+}
+
+.btn-hero:active {
+  transform: translateY(0px) !important;
 }
 
 /* STATS BOX */
@@ -601,7 +607,7 @@ button {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   body {
     padding: 12px;
   }
