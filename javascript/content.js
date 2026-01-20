@@ -3,7 +3,7 @@ console.log('🔧 Content script carregado!');
 
 function injectScript() {
   const script = document.createElement('script');
-  script.src = chrome.runtime.getURL('inject.js');
+  script.src = chrome.runtime.getURL('javascript/inject.js');
   script.onload = function() {
     this.remove();
     console.log('✅ Script injetado com sucesso!');

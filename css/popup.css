@@ -1,17 +1,35 @@
 /* Popup CSS */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --border: #e1e8ed;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
 body {
   width: 600px;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   padding: 10px;
+  background: var(--bg);
+  color: var(--text);
 }
 
 h1 {
-  color: #333;
+  color: var(--text);
+  font-weight: 700;
 }
 
 h2 {
-  color: #666;
-  border-bottom: 2px solid #ddd;
+  color: var(--text-light);
+  border-bottom: 2px solid var(--border);
   padding-bottom: 5px;
 }
 
@@ -23,49 +41,54 @@ ul {
 li {
   padding: 5px;
   margin: 5px 0;
-  background: #f5f5f5;
-  border-left: 3px solid #007bff;
+  background: var(--bg);
+  border-left: 3px solid var(--primary);
   padding-left: 10px;
 }
 
 /* Buttons */
 button {
-  padding: 8px 15px;
+  padding: 12px 16px;
   cursor: pointer;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   width: 100%;
-  margin-bottom: 5px;
-  font-weight: 500;
-  transition: opacity 0.2s;
+  margin-bottom: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
 }
 
 button:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
 }
 
-#btnVerDados {
-  background: #007bff;
+button:active {
+  transform: translateY(0);
 }
 
 #btnGerador {
-  background: #28a745;
-}
-
-#btnLimpar {
-  background: #dc3545;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
 /* Status */
 #status {
-  padding: 5px;
+  padding: 8px 12px;
   margin-bottom: 10px;
-  background: #f0f0f0;
-  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   font-size: 12px;
+  box-shadow: var(--shadow);
 }
 
 #dados {
   margin-top: 10px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }

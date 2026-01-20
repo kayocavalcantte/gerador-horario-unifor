@@ -212,6 +212,8 @@ function tentarGerarHorarios() {
     // Pegar top 5
     const top5 = combinacoesComScore.slice(0, 5);
     
+    console.log(`📊 Exibindo top ${top5.length} horários (de ${combinacoesComScore.length} total)`);
+    
     // Esconder spinner e exibir resultados
     if (loadingSpinner) loadingSpinner.style.display = 'none';
     exibirResultados(top5);
@@ -253,8 +255,21 @@ function exibirResultados(resultados) {
   }
   
   if (resultados.length === 0) {
-    resultadosEl.innerHTML = 
-      '<div class="status">❌ Nenhuma combinação de horário válida encontrada.</div>';
+    resultadosEl.innerHTML = `
+      <div class="no-results">
+        <div class="no-results-icon">📅</div>
+        <h3>Nenhum horário disponível</h3>
+        <p>Não foi possível encontrar combinações de aulas sem conflito de horários com os turnos selecionados.</p>
+        <div class="no-results-tips">
+          <strong>Sugestões:</strong>
+          <ul>
+            <li>Tente selecionar mais turnos disponíveis</li>
+            <li>Verifique se há turmas disponíveis para todas as disciplinas obrigatórias</li>
+            <li>Algumas disciplinas podem ter horários que se conflitam</li>
+          </ul>
+        </div>
+      </div>
+    `;
     return;
   }
   

@@ -9,19 +9,19 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["inject.js"],
+      "resources": ["javascript/inject.js"],
       "matches": ["https://uol.unifor.br/*"]
     }
   ],
   "content_scripts": [
     {
       "matches": ["https://uol.unifor.br/*"],
-      "js": ["content.js"],
+      "js": ["javascript/content.js"],
       "run_at": "document_start"
     }
   ],
   "action": {
     "default_popup": "hello.html",
-    "default_icon": "./assets/hello_extensions.png"
+    "default_icon": "./assets/icon-logo.png"
   }
 }

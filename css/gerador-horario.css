@@ -592,6 +592,64 @@ button {
   margin: 0;
 }
 
+/* NO RESULTS */
+.no-results {
+  text-align: center;
+  padding: 60px 40px;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 2px dashed var(--border);
+}
+
+.no-results-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-results h3 {
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.no-results > p {
+  color: var(--text-light);
+  font-size: 1rem;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.no-results-tips {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--bg);
+  border-radius: 8px;
+  border-left: 4px solid var(--warning);
+}
+
+.no-results-tips strong {
+  display: block;
+  color: var(--warning);
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.no-results-tips ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.no-results-tips li {
+  margin-bottom: 6px;
+}
+
 /* RESPONSIVE */
 @media (max-width: 1024px) {
   .layout {

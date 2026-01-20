@@ -60,6 +60,43 @@ function minutosParaHMS(minutos) {
   return `${String(horas).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
 }
 
+// Converter dsHorario em array de horários individuais
+function extrairHorarios(dsHorario) {
+  if (!dsHorario || dsHorario === '' || dsHorario.includes('FIXAR')) {
+    return [];
+  }
+  
+  const horarios = [];
+  
+  // Dividir por hífen primeiro (ex: "N2AB-N4AB" ou "N3AB-N5AB")
+  const partes = dsHorario.split('-').map(h => h.trim()).filter(h => h.length > 0);
+  
+  for (const parte of partes) {
+    // Padrão: (Turno)(Dias)(Períodos) - ex: "N24AB" = Noturno, dias 2 e 4, períodos AB
+    const match = parte.match(/^([MTN])(\d+)([A-Z]+)$/);
+    
+    if (!match) {
+      console.warn('Formato de horário não reconhecido:', parte);
+      continue;
+    }
+    
+    const [, turno, dias, periodos] = match;
+    
+    // Expandir cada dia individualmente
+    for (const dia of dias) {
+      // Para cada combinação de 2 letras nos períodos (AB, CD, EF)
+      for (let i = 0; i < periodos.length; i += 2) {
+        if (i + 1 < periodos.length) {
+          const periodo = periodos[i] + periodos[i + 1];
+          horarios.push(`${turno}${dia}${periodo}`);
+        }
+      }
+    }
+  }
+  
+  return horarios;
+}
+
 // Detectar conflito de horário
 function temConflito(tempo1, tempo2) {
   const t1 = parseTempo(tempo1);
@@ -97,19 +134,19 @@ function gerarCombinacoes(disciplinasObrigatorias) {
       let temConflitoBool = false;
       
       for (const turmaAnterior of combinacaoAtual) {
-        // Pegar horários - usar dsHorario se tempos não existir
-        const horariosAtual = turma.dsHorario ? [turma.dsHorario] : (turma.tempos || []);
-        const horariosAnterior = turmaAnterior.dsHorario ? [turmaAnterior.dsHorario] : (turmaAnterior.tempos || []);
+        // Pegar horários - expandir dsHorario que pode ter múltiplos horários
+        const horariosAtual = turma.dsHorario ? extrairHorarios(turma.dsHorario) : (turma.tempos || []);
+        const horariosAnterior = turmaAnterior.dsHorario ? extrairHorarios(turmaAnterior.dsHorario) : (turmaAnterior.tempos || []);
+        
+        // Pular se for EAD ou A FIXAR
+        if (horariosAtual.length === 0 || horariosAnterior.length === 0) {
+          continue;
+        }
         
         for (const horarioAtual of horariosAtual) {
           for (const horarioAnterior of horariosAnterior) {
-            // Ignorar EAD e A FIXAR (não têm conflito)
-            if (horarioAtual.includes('FIXAR') || horarioAnterior.includes('FIXAR') ||
-                !horarioAtual || !horarioAnterior || horarioAtual === '' || horarioAnterior === '') {
-              continue;
-            }
-            
             if (temConflito(horarioAtual, horarioAnterior)) {
+              console.log(`⚠️ CONFLITO detectado: ${horarioAtual} x ${horarioAnterior}`);
               temConflitoBool = true;
               break;
             }
@@ -138,15 +175,10 @@ function calcularScore(combinacao) {
   const diasUsados = new Set();
   
   for (const turma of combinacao) {
-    // Usar dsHorario se tempos não existir
-    const horarios = turma.dsHorario ? [turma.dsHorario] : (turma.tempos || []);
+    // Usar dsHorario expandido com múltiplos horários
+    const horarios = turma.dsHorario ? extrairHorarios(turma.dsHorario) : (turma.tempos || []);
     
     for (const tempo of horarios) {
-      // Ignorar EAD e A FIXAR
-      if (!tempo || tempo === '' || tempo.includes('FIXAR')) {
-        continue;
-      }
-      
       temposUnicos.add(tempo);
       const parsed = parseTempo(tempo);
       if (parsed) {
@@ -175,6 +207,7 @@ function calcularScore(combinacao) {
 window.HorarioAlgoritmo = {
   parseTempo,
   temConflito,
+  extrairHorarios,
   gerarCombinacoes,
   calcularScore,
   TURNOS,
