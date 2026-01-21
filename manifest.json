@@ -1,11 +1,11 @@
 {
   "name": "Unifor Timetable Generator",
-  "description": "Captura dados de disciplinas",
+  "description": "Captura dados de disciplinas e gera grade de horários automaticamente.",
   "author": "Kayo Duarte Cavalcante",
-  "homepage_url": "https://github.com/kayocavalcantte",
-  "version": "1.0",
+  "homepage_url": "https://github.com/kayocavalcantte/gerador-horario-unifor",
+  "version": "1.1",
   "manifest_version": 3,
-  "permissions": ["tabs", "scripting", "storage"],
+  "permissions": ["storage"],
   "host_permissions": [
     "https://uol.unifor.br/*"
   ],
@@ -19,7 +19,7 @@
     {
       "matches": ["https://uol.unifor.br/*"],
       "js": ["javascript/content.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "action": {
